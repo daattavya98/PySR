@@ -148,9 +148,14 @@ def _check_assertions(
     y,
     X_units,
     y_units,
+    no_input_dimensions : int | None = None,
 ):
     # Check for potential errors before they happen
-    # assert len(X.shape) == 2
+    if no_input_dimensions is not None:
+        assert len(X.shape) == no_input_dimensions
+    else:
+        assert len(X.shape) == 2
+
     assert len(y.shape) in [1, 2]
     assert X.shape[0] == y.shape[0]
     if weights is not None:
