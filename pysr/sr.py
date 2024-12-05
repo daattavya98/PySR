@@ -150,7 +150,7 @@ def _check_assertions(
     y_units,
 ):
     # Check for potential errors before they happen
-    assert len(X.shape) == 2
+    # assert len(X.shape) == 2
     assert len(y.shape) in [1, 2]
     assert X.shape[0] == y.shape[0]
     if weights is not None:
@@ -676,6 +676,10 @@ class PySRRegressor(MultiOutputMixin, RegressorMixin, BaseEstimator):
         Default is `None`.
     allow_nd_input : bool
         Allow n-dimensional input by passing an argument to sklearn's validation check
+        Default is `False`.
+    no_input_dimensions : int
+        Number of input dimensions to use when `allow_nd_input` is `True`.
+        Default is `None`.
     **kwargs : dict
         Supports deprecated keyword arguments. Other arguments will
         result in an error.
@@ -869,6 +873,7 @@ class PySRRegressor(MultiOutputMixin, RegressorMixin, BaseEstimator):
         denoise: bool = False,
         select_k_features: int | None = None,
         allow_nd_input: bool = False,
+        no_input_dimensions: int | None = None,
         **kwargs,
     ):
         # Hyperparameters
@@ -978,6 +983,7 @@ class PySRRegressor(MultiOutputMixin, RegressorMixin, BaseEstimator):
         self.denoise = denoise
         self.select_k_features = select_k_features
         self.allow_nd_input = allow_nd_input
+        self.no_input_dimensions = no_input_dimensions
 
         # Once all valid parameters have been assigned handle the
         # deprecated kwargs
