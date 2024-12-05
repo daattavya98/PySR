@@ -2244,6 +2244,7 @@ class PySRRegressor(MultiOutputMixin, RegressorMixin, BaseEstimator):
             y,
             X_units,
             y_units,
+            no_input_dimensions=self.no_input_dimensions,
         )
 
         # Initially, just save model parameters, so that
