@@ -51,8 +51,10 @@ jl = cast(ModuleType, jl)
 
 jl_version = (jl.VERSION.major, jl.VERSION.minor, jl.VERSION.patch)
 
-jl.seval("using SymbolicRegression")
-SymbolicRegression = jl.SymbolicRegression
-
-jl.seval("using Pkg: Pkg")
+jl.seval("""
+         using Pkg: Pkg
+         Pkg.add("SymbolicRegression")
+         using SymbolicRegression
+         """)
 Pkg = jl.Pkg
+SymbolicRegression = jl.SymbolicRegression
