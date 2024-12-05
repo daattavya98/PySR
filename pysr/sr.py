@@ -674,6 +674,8 @@ class PySRRegressor(MultiOutputMixin, RegressorMixin, BaseEstimator):
         before passing to the symbolic regression code. None means no
         feature selection; an int means select that many features.
         Default is `None`.
+    allow_nd_input : bool
+        Allow n-dimensional input by passing an argument to sklearn's validation check
     **kwargs : dict
         Supports deprecated keyword arguments. Other arguments will
         result in an error.
@@ -866,6 +868,7 @@ class PySRRegressor(MultiOutputMixin, RegressorMixin, BaseEstimator):
         extra_jax_mappings: dict[Callable, str] | None = None,
         denoise: bool = False,
         select_k_features: int | None = None,
+        allow_nd_input: bool = False,
         **kwargs,
     ):
         # Hyperparameters
@@ -974,6 +977,7 @@ class PySRRegressor(MultiOutputMixin, RegressorMixin, BaseEstimator):
         # Pre-modelling transformation
         self.denoise = denoise
         self.select_k_features = select_k_features
+        self.allow_nd_input = allow_nd_input
 
         # Once all valid parameters have been assigned handle the
         # deprecated kwargs
@@ -1558,7 +1562,7 @@ class PySRRegressor(MultiOutputMixin, RegressorMixin, BaseEstimator):
         # Data validation and feature name fetching via sklearn
         # This method sets the n_features_in_ attribute
         if Xresampled is not None:
-            Xresampled = check_array(Xresampled)
+            Xresampled = check_array(Xresampled, allow_nd=self.allow_nd_input)
         if weights is not None:
             weights = check_array(weights, ensure_2d=False)
             check_consistent_length(weights, y)
@@ -1601,11 +1605,11 @@ class PySRRegressor(MultiOutputMixin, RegressorMixin, BaseEstimator):
         )
 
     def _validate_data_X_y(self, X: Any, y: Any) -> tuple[ndarray, ndarray]:
-        raw_out = self._validate_data(X=X, y=y, reset=True, multi_output=True)  # type: ignore
+        raw_out = self._validate_data(X=X, y=y, reset=True, multi_output=True, allow_nd=self.allow_nd_input)  # type: ignore
         return cast(tuple[ndarray, ndarray], raw_out)
 
     def _validate_data_X(self, X: Any) -> ndarray:
-        raw_out = self._validate_data(X=X, reset=False)  # type: ignore
+        raw_out = self._validate_data(X=X, reset=False, allow_nd=self.allow_nd_input)  # type: ignore
         return cast(ndarray, raw_out)
 
     def _get_precision_mapped_dtype(self, X: np.ndarray) -> type:
